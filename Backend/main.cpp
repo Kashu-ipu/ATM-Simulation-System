@@ -46,7 +46,8 @@ int main() {
         cout << "1. Balance Enquiry\n";
         cout << "2. Deposit Money\n";
         cout << "3. Withdraw Money\n";
-        cout << "4. Exit\n";
+        cout << "4. Transaction History\n";
+        cout << "5. Exit\n";
         cout << "Enter your choice: ";
 
         if (!(cin >> choice)) {
@@ -88,7 +89,27 @@ int main() {
                     }
                     break;
 
-                case 4:
+                case 4: {
+                   const vector<Transaction>& history = atm.getTransactionHistory();
+
+                   if (history.empty()) {
+                        cout << "No transactions found.\n";
+                    }
+                   else {
+                        cout << "\n===== TRANSACTION HISTORY =====\n";
+
+                        for (int i = 0; i < history.size(); i++) {
+                            cout << "\nTransaction " << i + 1 << "\n";
+                            cout << "Type: " << history[i].type << "\n";
+                            cout << "Amount: Rs. " << history[i].amount << "\n";
+                            cout << "Balance After Transaction: Rs. "
+                            << history[i].balanceAfter << "\n";
+                        }
+                    }
+                    break;
+            }
+
+                case 5:
                     cout << "Thank you for using our ATM!\n";
                     break;
 
@@ -103,7 +124,7 @@ int main() {
             cout << "Transaction Error: " << e.what() << "\n";
         }
 
-    } while (choice != 4);
+    } while (choice != 5);
 
     return 0;
 }

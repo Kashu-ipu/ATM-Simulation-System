@@ -68,6 +68,9 @@ double ATM::deposit(double amount) {
     }
 
     balance += amount;
+
+    transactions.push_back({"Deposit", amount, balance});
+
     return balance;
 }
 
@@ -86,10 +89,33 @@ double ATM::withdraw(double amount) {
     }
 
     balance -= amount;
+
+    transactions.push_back({"Withdrawal", amount, balance});
+
     return balance;
 }
 
 // Check lock status
 bool ATM::getLockStatus() {
     return isLocked;
+}
+
+// End current user session
+void ATM::logout() {
+    isAuthenticated = false;
+}
+
+// Get authentication status
+bool ATM::getAuthStatus() const {
+    return isAuthenticated;
+}
+
+// Get remaining PIN attempts
+int ATM::getRemainingAttempts() const {
+    int remaining = 3 - failedAttempts;
+    return (remaining > 0) ? remaining : 0;
+}
+
+const std::vector<Transaction>& ATM::getTransactionHistory() const {
+    return transactions;
 }

@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ATM Simulation System</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="atm-container">
+
+    <!-- Top ATM Hardware Bezel Header -->
+    <header class="atm-header">
+      <div class="brand">
+        <div class="bank-logo">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="3" y1="21" x2="21" y2="21"></line>
+            <line x1="3" y1="10" x2="21" y2="10"></line>
+            <polyline points="5 10 5 21"></polyline>
+            <polyline points="19 10 19 21"></polyline>
+            <path d="M12 2L2 7h20L12 2z"></path>
+          </svg>
+        </div>
+        <div>
+          <h1>APEX NATIONAL BANK</h1>
+          <p class="subheading">ATM SIMULATION SYSTEM &bull; C++ OOPs BACKEND</p>
+        </div>
+      </div>
+      <div class="system-status">
+        <span class="status-indicator" id="statusIndicator"></span>
+        <span class="status-text" id="statusText">ATM Online</span>
+      </div>
+    </header>
+
+    <!-- Main ATM Screen Frame -->
+    <main class="atm-screen" id="atmScreen">
+
+      <!-- ============================================== -->
+      <!-- SCREEN 1: ATM WELCOME / PIN LOGIN SCREEN       -->
+      <!-- ============================================== -->
+      <section class="screen-view active" id="loginScreen">
+        <div class="login-container">
+          <div class="welcome-box">
+            <span class="badge-chip">SECURE ATM ACCESS</span>
+            <h2>Welcome to Apex ATM</h2>
+            <p class="welcome-desc">Please enter your 4-digit secret PIN to begin your banking session.</p>
+          </div>
+
+          <!-- PIN Display Dots -->
+          <div class="pin-display-wrapper">
+            <div class="pin-dots" id="pinDots">
+              <span class="dot"></span>
+              <span class="dot"></span>
+              <span class="dot"></span>
+              <span class="dot"></span>
+            </div>
+            <input type="password" id="pinInput" maxlength="4" autocomplete="off" inputmode="numeric" placeholder="Enter PIN" readonly>
+          </div>
+
+          <!-- Error / Info Notification Message -->
+          <div class="message-banner hidden" id="loginMessage"></div>
+
+          <!-- Interactive Numeric Keypad -->
+          <div class="keypad-wrapper">
+            <div class="numeric-keypad">
+              <button type="button" class="key-btn" data-key="1">1</button>
+              <button type="button" class="key-btn" data-key="2">2</button>
+              <button type="button" class="key-btn" data-key="3">3</button>
+
+              <button type="button" class="key-btn" data-key="4">4</button>
+              <button type="button" class="key-btn" data-key="5">5</button>
+              <button type="button" class="key-btn" data-key="6">6</button>
+
+              <button type="button" class="key-btn" data-key="7">7</button>
+              <button type="button" class="key-btn" data-key="8">8</button>
+              <button type="button" class="key-btn" data-key="9">9</button>
+
+              <button type="button" class="key-btn key-action key-clear" id="btnClear">CLEAR</button>
+              <button type="button" class="key-btn" data-key="0">0</button>
+              <button type="button" class="key-btn key-action key-enter" id="btnEnter">ENTER</button>
+            </div>
+          </div>
+
+          <div class="demo-credentials">
+            <p><strong>Demo Account:</strong> Default PIN: <code>1234</code> &bull; Initial Balance: <code>₹10,000</code></p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================== -->
+      <!-- SCREEN 2: ATM DASHBOARD SCREEN                -->
+      <!-- ============================================== -->
+      <section class="screen-view" id="dashboardScreen">
+        <div class="dashboard-container">
+          <!-- Top greeting & Balance Summary Card -->
+          <div class="user-greeting-bar">
+            <div>
+              <h3>Hello, Customer</h3>
+              <p class="account-num">Account No: <strong>****-****-7890</strong></p>
+            </div>
+            <div class="session-chip">
+              <span class="pulse-dot"></span> Authenticated Session
+            </div>
+          </div>
+
+          <!-- Quick Balance Glance Card -->
+          <div class="balance-card">
+            <div class="card-left">
+              <span class="card-label">AVAILABLE BALANCE (C++ BACKEND)</span>
+              <div class="card-balance">
+                <span class="currency">₹</span>
+                <span class="amount" id="dashBalanceDisplay">--.--</span>
+              </div>
+            </div>
+            <button class="btn-refresh" id="btnRefreshBalance" title="Sync with C++ Backend">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/>
+              </svg>
+              Refresh
+            </button>
+          </div>
+
+          <!-- ATM Service Navigation Grid -->
+          <div class="menu-grid">
+            <button type="button" class="menu-card" id="menuCheckBalance">
+              <div class="menu-icon icon-balance">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="2" y="4" width="20" height="16" rx="2"/>
+                  <line x1="2" y1="10" x2="22" y2="10"/>
+                </svg>
+              </div>
+              <div class="menu-info">
+                <h4>Check Balance</h4>
+                <p>Enquire live balance from C++</p>
+              </div>
+            </button>
+
+            <button type="button" class="menu-card" id="menuDeposit">
+              <div class="menu-icon icon-deposit">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M12 5v14M5 12l7 7 7-7"/>
+                </svg>
+              </div>
+              <div class="menu-info">
+                <h4>Deposit Money</h4>
+                <p>Add cash to your account</p>
+              </div>
+            </button>
+
+            <button type="button" class="menu-card" id="menuWithdraw">
+              <div class="menu-icon icon-withdraw">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M12 19V5M5 12l7-7 7 7"/>
+                </svg>
+              </div>
+              <div class="menu-info">
+                <h4>Withdraw Money</h4>
+                <p>Withdraw cash with validation</p>
+              </div>
+            </button>
+
+            <button type="button" class="menu-card" id="menuHistory">
+              <div class="menu-icon icon-history">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="10"/>
+                  <polyline points="12 6 12 12 16 14"/>
+                </svg>
+              </div>
+              <div class="menu-info">
+                <h4>Transaction History</h4>
+                <p>View STL Vector history</p>
+              </div>
+            </button>
+          </div>
+
+          <div class="dashboard-footer">
+            <button type="button" class="btn-logout-alt" id="btnDashboardLogout">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                <polyline points="16 17 21 12 16 7"></polyline>
+                <line x1="21" y1="12" x2="9" y2="12"></line>
+              </svg>
+              End Session / Logout
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================== -->
+      <!-- SCREEN 3: BALANCE ENQUIRY SCREEN               -->
+      <!-- ============================================== -->
+      <section class="screen-view" id="balanceScreen">
+        <div class="operation-container">
+          <div class="view-header">
+            <span class="badge-chip">ACCOUNT DETAILS</span>
+            <h2>Balance Enquiry</h2>
+            <p>Direct query evaluated by C++ <code>checkBalance()</code></p>
+          </div>
+
+          <div class="receipt-card">
+            <div class="receipt-header">
+              <div class="receipt-logo">APEX ATM RECEIPT</div>
+              <div class="receipt-time" id="balanceTimestamp">--</div>
+            </div>
+            <div class="receipt-divider"></div>
+            <div class="receipt-row">
+              <span>Account Number</span>
+              <span class="receipt-val">****-****-7890</span>
+            </div>
+            <div class="receipt-row">
+              <span>Account Holder</span>
+              <span class="receipt-val">Customer</span>
+            </div>
+            <div class="receipt-row">
+              <span>Account Type</span>
+              <span class="receipt-val">Savings A/C</span>
+            </div>
+            <div class="receipt-divider"></div>
+            <div class="receipt-balance-box">
+              <span class="label">CURRENT AVAILABLE BALANCE</span>
+              <div class="amount-large">
+                <span class="currency">₹</span>
+                <span id="enquiryBalanceDisplay">0.00</span>
+              </div>
+            </div>
+            <div class="receipt-footer-text">
+              Transaction verified by C++ OOPs Engine &bull; No charges applicable
+            </div>
+          </div>
+
+          <div class="actions-row">
+            <button type="button" class="btn-secondary" id="btnBalanceBack">
+              &larr; Back to Dashboard
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================== -->
+      <!-- SCREEN 4: CASH DEPOSIT SCREEN                 -->
+      <!-- ============================================== -->
+      <section class="screen-view" id="depositScreen">
+        <div class="operation-container">
+          <div class="view-header">
+            <span class="badge-chip">CASH INFLOW</span>
+            <h2>Deposit Money</h2>
+            <p>Validated by C++ <code>deposit(double amount)</code></p>
+          </div>
+
+          <div class="form-card">
+            <div class="current-bal-pill">
+              Available Balance: <strong id="depositCurrentBal">₹ 10,000.00</strong>
+            </div>
+
+            <label for="depositAmount">Enter Deposit Amount (₹)</label>
+            <div class="input-currency-wrapper">
+              <span class="currency-prefix">₹</span>
+              <input type="number" id="depositAmount" placeholder="e.g. 2000" min="1" step="1" autocomplete="off">
+            </div>
+
+            <!-- Quick Amount Selector Buttons -->
+            <div class="quick-chips">
+              <button type="button" class="chip-btn" data-add="500">+ ₹500</button>
+              <button type="button" class="chip-btn" data-add="1000">+ ₹1,000</button>
+              <button type="button" class="chip-btn" data-add="2000">+ ₹2,000</button>
+              <button type="button" class="chip-btn" data-add="5000">+ ₹5,000</button>
+            </div>
+
+            <div class="form-banner hidden" id="depositMessage"></div>
+
+            <div class="form-actions">
+              <button type="button" class="btn-primary" id="btnSubmitDeposit">
+                Confirm &amp; Deposit Cash
+              </button>
+              <button type="button" class="btn-secondary" id="btnDepositBack">
+                &larr; Back to Dashboard
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================== -->
+      <!-- SCREEN 5: CASH WITHDRAWAL SCREEN              -->
+      <!-- ============================================== -->
+      <section class="screen-view" id="withdrawScreen">
+        <div class="operation-container">
+          <div class="view-header">
+            <span class="badge-chip">CASH OUTFLOW</span>
+            <h2>Withdraw Money</h2>
+            <p>Validated by C++ <code>withdraw(double amount)</code></p>
+          </div>
+
+          <div class="form-card">
+            <div class="current-bal-pill">
+              Available Balance: <strong id="withdrawCurrentBal">₹ 10,000.00</strong>
+            </div>
+
+            <label for="withdrawAmount">Enter Withdrawal Amount (₹)</label>
+            <div class="input-currency-wrapper">
+              <span class="currency-prefix">₹</span>
+              <input type="number" id="withdrawAmount" placeholder="e.g. 1000" min="1" step="1" autocomplete="off">
+            </div>
+
+            <!-- Quick Amount Selector Buttons -->
+            <div class="quick-chips">
+              <button type="button" class="chip-btn-set" data-val="500">₹500</button>
+              <button type="button" class="chip-btn-set" data-val="1000">₹1,000</button>
+              <button type="button" class="chip-btn-set" data-val="2000">₹2,000</button>
+              <button type="button" class="chip-btn-set" data-val="5000">₹5,000</button>
+            </div>
+
+            <div class="form-banner hidden" id="withdrawMessage"></div>
+
+            <div class="form-actions">
+              <button type="button" class="btn-primary" id="btnSubmitWithdraw">
+                Dispense Cash
+              </button>
+              <button type="button" class="btn-secondary" id="btnWithdrawBack">
+                &larr; Back to Dashboard
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================== -->
+      <!-- SCREEN 6: TRANSACTION HISTORY SCREEN           -->
+      <!-- ============================================== -->
+      <section class="screen-view" id="historyScreen">
+        <div class="operation-container history-container">
+          <div class="view-header">
+            <span class="badge-chip">AUDIT TRAIL</span>
+            <h2>Transaction History</h2>
+            <p>Stored and served via C++ <code>std::vector&lt;Transaction&gt;</code></p>
+          </div>
+
+          <div class="history-card">
+            <div class="history-summary-bar">
+              <div>
+                <span>Total Recorded:</span>
+                <strong id="historyCount">0 Transactions</strong>
+              </div>
+              <div>
+                <span>Current Balance:</span>
+                <strong class="balance-hl" id="historyCurrentBal">₹ 10,000.00</strong>
+              </div>
+            </div>
+
+            <div class="table-responsive">
+              <table class="history-table" id="historyTable">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Type</th>
+                    <th>Amount</th>
+                    <th>Balance After</th>
+                  </tr>
+                </thead>
+                <tbody id="historyTableBody">
+                  <!-- Dynamic rows rendered from C++ backend -->
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Empty State -->
+            <div class="empty-state hidden" id="historyEmptyState">
+              <div class="empty-icon">
+                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <line x1="8" y1="12" x2="16" y2="12"></line>
+                </svg>
+              </div>
+              <h4>No Transactions Yet</h4>
+              <p>Make a deposit or withdrawal to view your transaction trail.</p>
+            </div>
+          </div>
+
+          <div class="actions-row">
+            <button type="button" class="btn-secondary" id="btnHistoryBack">
+              &larr; Back to Dashboard
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================== -->
+      <!-- SCREEN 7: LOGOUT CONFIRMATION & SCREEN         -->
+      <!-- ============================================== -->
+      <section class="screen-view" id="logoutScreen">
+        <div class="operation-container logout-box">
+          <div class="logout-icon-circle">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+              <polyline points="22 4 12 14.01 9 11.01"></polyline>
+            </svg>
+          </div>
+          <h2>Session Terminated</h2>
+          <p class="logout-msg">Thank you for using Apex National Bank ATM.</p>
+          <p class="logout-sub">Your session has been securely ended on the C++ backend. Please collect your ATM card.</p>
+          <div class="logout-actions">
+            <button type="button" class="btn-primary" id="btnReturnToLogin">
+              Return to Login Screen
+            </button>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- Logout Confirmation Modal Dialog -->
+    <div class="modal-backdrop hidden" id="logoutModal">
+      <div class="modal-card">
+        <h3>Confirm Logout</h3>
+        <p>Are you sure you want to exit and end your current ATM session?</p>
+        <div class="modal-actions">
+          <button type="button" class="btn-secondary" id="btnCancelLogout">Cancel</button>
+          <button type="button" class="btn-danger" id="btnConfirmLogout">Yes, Logout</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ATM Hardware Footer / Card Slot Simulation -->
+    <footer class="atm-footer">
+      <div class="card-slot">
+        <span class="slot-light"></span>
+        <span class="slot-text">CARD SLOT &bull; CHIP ACTIVE</span>
+      </div>
+      <div class="receipt-slot">
+        <span class="slot-text">RECEIPT PRINTER</span>
+      </div>
+      <div class="cash-dispenser-slot">
+        <span class="slot-text">CASH DISPENSER</span>
+      </div>
+    </footer>
+
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
